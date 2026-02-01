@@ -56,6 +56,7 @@ flowchart LR
 | UC-2        |Update over USB connection               |Host Device               |Firmware update is sent by host device over USB when the device is in bootloader mode                   |
 | UC-3        |Update over BLE connection               |Host Device               |Firmware update is sent by host device over BLE when the device is in bootloader mode                   |                  |
 | UC-4        |Recover after power loss               |Power supply              |The device will boot as normal after the loss of power even if the power loss interrupted a firmware update                 |
+| UC-5        |Firmware Updation completed               |  Host PC             | Exit bootmode by reset if DFU is completed                  |
 ---
 
 ### Use Case Descriptions
@@ -87,7 +88,11 @@ flowchart LR
 - Main Scenario: Device switches off during software update → Power is restored → Device validates firmware → Switches to valid firmware image → Executes valid firmware
 - Outcome: System continues normal operation
 
-
+#### UC-5 : Exit after Firmware Update completion
+* Goal : After completing DFU system should start running application 
+* Trigger : All  data packets are recieved and integrity is checked 
+* Success scenario : System resets  
+* Alternate scenario : System continues to wait  in bootmode
 ---
 
 ## UML Statechart (Behavioral Model)
