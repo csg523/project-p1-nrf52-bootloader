@@ -104,21 +104,22 @@ stateDiagram-v2
 
     BoardOff --> BoardOn : PowerOn
 
-    BoardOn --> BootloaderMode : DoublePress
-    BoardOn --> ApplicationMode : 3SecsLater
+    state BoardOn
+    {
+        [*] --> BootloaderMode : DoublePress        
+        [*] --> ApplicationMode : 3SecsLater&&IntegrityCheck
+        state BootloaderMode {
+            [*] --> DFU_BLE : BLEConnection
+            [*] --> DFU_USB : USBConnection
+        }
+        BootloaderMode --> waitstate : UpdateComplete
+        waitstate --> ApplicationMode : Reset
+        BootloaderMode --> waitstate : ConnectionLoss
+        BootloaderMode --> waitstate : NoUpdate
+        waitstate --> BootloaderMode : reset
+    }
 
-    BootloaderMode --> WiredDFU_init:USBConnection
-    BootloaderMode --> WirelessDFU_init:BLEConnection
-
-    WiredDFU_init -->BoardOff:PowerLoss
-    WirelessDFU_init -->BoardOff:PowerLoss
-    ApplicationMode -->BoardOff:PowerLoss
-
-    WiredDFU_init --> BootloaderMode: ConnectionLoss
-    WirelessDFU_init --> BootloaderMode: ConnectionLoss
-
-    WiredDFU_init -->BoardOn:UpdateSuccess
-    WirelessDFU_init --> BoardOn: UpdateSuccess
+    BoardOn --> BoardOff : PowerLoss
 ```
 
 ---
