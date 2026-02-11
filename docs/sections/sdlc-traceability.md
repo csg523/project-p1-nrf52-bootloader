@@ -1,25 +1,23 @@
-## Development Process
+# 1. Key Sequence Diagrams
 
-The project follows a V-model inspired development process,
-emphasizing early verification planning and continuous validation.
+## SD-1: System Start-up and Boot Decision
+```mermaid
+sequenceDiagram
+    participant Power
+    participant Bootloader
+    participant Button
+    participant Flash
+    participant Application
 
-Key phases include:
-- Requirements analysis
-- Architectural design
-- Detailed design and implementation
-- Verification and validation
+    Power-->>Bootloader: Power On / Reset
+    Bootloader->>Button: Monitor button input (3000 ms)
+    Bootloader->>Flash: Check flash completion flag
+    Bootloader->>Flash: Run integrity check
 
-## Traceability
-
-Each requirement is traced to:
-- Architectural elements
-- Software modules
-- Test cases
-
-Traceability ensures that all requirements are implemented
-and verified systematically.
-
-## Verification Planning
-
-Verification activities are planned alongside design activities
-to ensure testability and early detection of defects.
+    alt Double press detected
+        Bootloader->>Bootloader: Enter Bootloader Mode
+    else Integrity check failed
+        Bootloader->>Bootloader: Remain in Bootloader Mode
+    else No button press and integrity OK
+        Bootloader->>Application: Jump to application
+    end
