@@ -14,7 +14,7 @@ sequenceDiagram
     Bootloader->>Flash: Check flash completion flag
     Bootloader->>Flash: Run integrity check
 
-    alt Double press detected
+    Double press detected
         Bootloader->>Bootloader: Enter Bootloader Mode
     else Integrity check failed
         Bootloader->>Bootloader: Remain in Bootloader Mode
@@ -25,7 +25,7 @@ sequenceDiagram
 
 ---
 
-## SD-2: Firmware Update over USB (Sunny Day)
+## SD-2: Firmware Update over USB
 ```mermaid
 sequenceDiagram
     participant Host
