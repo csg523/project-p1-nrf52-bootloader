@@ -14,7 +14,7 @@ sequenceDiagram
     Bootloader->>Flash: Check flash completion flag
     Bootloader->>Flash: Run integrity check
 
-    Double press detected
+    alt Double press detected
         Bootloader->>Bootloader: Enter Bootloader Mode
     else Integrity check failed
         Bootloader->>Bootloader: Remain in Bootloader Mode
