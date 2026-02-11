@@ -14,13 +14,18 @@ sequenceDiagram
     Bootloader->>Flash: Check flash completion flag
     Bootloader->>Flash: Run integrity check
 
+    
+
     alt Double press detected
-        Bootloader->>Bootloader: Enter Bootloader Mode
+        Bootloader->>Bootloader: Enter DFU Mode
     else Integrity check failed
-        Bootloader->>Bootloader: Remain in Bootloader Mode
+        Bootloader->>Bootloader: Remain in DFU Mode
     else No button press and integrity OK
         Bootloader->>Application: Jump to application
     end
+
+    Application-->>Bootloader: Reset
+    
 ```
 
 ---
@@ -28,19 +33,19 @@ sequenceDiagram
 ## SD-2: Firmware Update over USB
 ```mermaid
 sequenceDiagram
-    participant Host
+    participant USB Host
     participant Bootloader
     participant USB
     participant Flash
 
-    Host->>USB: Initiate DFU
+    USB Host->>USB: Initiate DFU
     USB->>Bootloader: Establish connection
     Bootloader->>Flash: Prepare flash
-    loop For each firmware packet
-        USB->>Bootloader: Firmware data
-        Bootloader->>Flash: Write packet
-    end
+    Flash->>Bootloader: Flash Complete
+    
     Bootloader->>Flash: Verify integrity
+    Flash->>Bootloader: Update Verified
+
     Bootloader->>Bootloader: Mark update complete
     Bootloader->>Bootloader: Reset system
 ```
@@ -73,7 +78,7 @@ sequenceDiagram
     participant Bootloader
     participant Flash
 
-    Power-->>Bootloader: Power loss
+    Power-->>Power: Power loss
     note right of Flash: Flash operation interrupted
 
     Power-->>Bootloader: Power restored
@@ -81,10 +86,10 @@ sequenceDiagram
     Bootloader->>Flash: Run integrity check
 
     alt Incomplete or corrupted image
-        Bootloader->>Bootloader: Remain in bootloader mode
+        Bootloader->>Bootloader: Remain in DFU mode
     else Valid firmware
         Bootloader->>Bootloader: Wait 3000 ms
-        Bootloader->>Application: Jump to application
+        Bootloader->>Application: Load application
     end
 ```
 
